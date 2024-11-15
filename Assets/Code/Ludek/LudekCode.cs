@@ -16,6 +16,7 @@ public class LudekCode : MonoBehaviour
     {
         rb = GetComponent<Rigidbody2D>();
         lifetimer = GetComponentInChildren<TextMeshPro>();
+        player = GameObject.Find("player");
     }
 
 
