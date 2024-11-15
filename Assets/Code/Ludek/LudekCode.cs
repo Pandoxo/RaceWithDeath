@@ -1,4 +1,5 @@
 using UnityEngine;
+using TMPro;
 
 public class LudekCode : MonoBehaviour
 {
@@ -9,16 +10,18 @@ public class LudekCode : MonoBehaviour
     [SerializeField] Rigidbody2D rb;
 
     [SerializeField] GameObject player;
-
+    [SerializeField] TextMeshPro lifetimer;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        lifetimer = GetComponentInChildren<TextMeshPro>();
     }
 
 
     void FixedUpdate()
     {
+        lifetimer.text = lifetime.ToString();
         if (Vector3.Distance(player.GetComponent<Rigidbody2D>().position, rb.position) <= range)
         {
             Debug.Log("Gracz w zasiegu");
