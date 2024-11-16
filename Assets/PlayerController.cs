@@ -9,14 +9,26 @@ public class PlayerController : MonoBehaviour
     public float collisionOffest = 0.05f;
     public ContactFilter2D movementFilter;
 
+    GameObject ambulance;
+    Animator animator;
     Vector2 movementInput;
+    SpriteRenderer spriteRenderer;
     Rigidbody2D rb;
+    Transform playerTransform;
     List<RaycastHit2D> castCollisions = new List<RaycastHit2D>();
+
+    Vector2 lastMove;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
-        
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        ambulance = GetComponent<GameObject>();
+        playerTransform = GetComponent<Transform>();
+        ambulance = GameObject.FindGameObjectWithTag("ambulance");
+
+
     }
 
  
@@ -25,6 +37,9 @@ public class PlayerController : MonoBehaviour
         if(movementInput != Vector2.zero)
         {
             bool succes = TryMove(movementInput);
+            lastMove = movementInput;
+            animator.SetFloat("Horizontal",movementInput.x);
+            animator.SetFloat("Vertical",movementInput.y);
 
             if (!succes){
                 succes = TryMove(new Vector2(movementInput.x ,0));
@@ -32,7 +47,27 @@ public class PlayerController : MonoBehaviour
                     succes = TryMove(new Vector2(0,movementInput.y));
                 }
             }
+            animator.SetBool("isMoving",succes);
+        }else{
+            if (lastMove.x >0){
+                animator.Play("PlayerIdle",0,0.99f);
+            } else if (lastMove.x < 0){
+                animator.Play("PlayerIdle",0,0.0f);
+            } else if (lastMove.y > 0){
+                animator.Play("PlayerIdle",0,0.5f);
+            }else if (lastMove.y < 0){
+                animator.Play("PlayerIdle",0,0.25f);
+            }
+
+            animator.SetBool("isMoving",false);
         }
+
+        
+
+    }
+
+    private void EnterAmbulance()
+    {
 
     }
 
@@ -57,6 +92,16 @@ public class PlayerController : MonoBehaviour
         movementInput = movementValue.Get<Vector2>();
 
 
+
+    }
+
+    void OnEnterVehicle()
+    {
+        if ((ambulance.transform.position - playerTransform.position).magnitude < 5.0f){
+            Debug.Log("Enter");
+
+
+        }
 
     }
 }
